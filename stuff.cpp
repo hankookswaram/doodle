@@ -1,30 +1,46 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <map>
+#include <stack>
+#include <queue>
+#include <vector>
+#include <deque>
+#include <cstdlib>
+#include <unordered_map>
+#include <cctype>
 
 using namespace std;
 
-int main() {
-    int n;
-    cin >> n;
-    int inputs[n+1];
-    int dp[1001];
+vector<vector <int>> graph;
+vector<bool> visited;
+int inf_count = 0;
 
-    for (int i=0; i<n; i++) {
-        cin >> inputs[i];
-    }
-
-    int answer = 0;
-    for (int i=0; i<n; i++) {
-        dp[i] = 1;
-        for (int j=0; j<i; j++) {
-            if (inputs[i] > inputs[j]) {
-                dp[i] = max(dp[i], dp[j]+1);
-            }
+void dfs(int n) {
+    visited[n] = true;
+    for (int i : graph[n]) {
+        if (!visited[i]) {
+            inf_count++;
+            dfs(i);
         }
-        answer = max(answer, dp[i]);
     }
-    cout << answer << endl;
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+
+    graph.resize(n+1);
+    visited.resize(n+1, false);
+
+    for (int i=0; i<m; i++) {
+        int a, b;
+        cin >> a >> b;
+        graph[a].push_back(b);
+        graph[b].push_back(a);
+    }
+    dfs(1);
+    cout << inf_count << '\n';
 
     return 0;
 }
